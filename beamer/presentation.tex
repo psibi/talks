@@ -1,0 +1,239 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[english]{babel}
+\lstset{language=Haskell}
+% or whatever
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Just Another Abstraction] % (optional, use only with long paper titles)
+{Monad}
+
+\author[Sibi] % (optional, use only with lots of authors)
+{}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[CHENSE Meetup] % (optional, but mostly needed)
+{ 
+  %% TCS Innovation Labs \\
+  %% Cyber Physical Systems Lab
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date[] % (optional)
+{March 1, 2014}
+%% {\today}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%% \beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{About Me}
+\begin{itemize}
+\item
+Sibi
+\item
+Haskell Programmer
+\item
+Internet Handle: psibi (github, Twitter)
+\item
+  Mail: sibi@psibi.in
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+
+% Since this a solution template for a generic talk, very little can
+% be said about how it should be structured. However, the talk length
+% of between 15min and 45min and the theme suggest that you stick to
+% the following rules:  
+
+% - Exactly two or three sections (other than the summary).
+% - At *most* three subsections per section.
+% - Talk about 30s to 2min per frame. So there should be between about
+%   15 and 30 frames, all told.
+
+\section{Introduction}
+
+\begin{frame}{Some basics}
+\begin{itemize}
+
+\item
+Types
+\item
+TypeClasses
+\item
+Functions
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Maybe Type}
+  % - A title should summarize the slide in an understandable fashion
+  %   for anyone how does not follow everything on the slide itself.
+  \begin{itemize}
+  \item For values which may or may not have a value.
+  \item data Maybe a = Just a | Nothing
+  \item Examples:
+    \begin{itemize}
+    \item Just "hi"
+    \item Just 3
+    \item Nothing
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\section{Monad}
+
+\begin{frame}{Definition}
+  \begin{itemize}
+  \item Category theory definition is scary!
+  \item But you don't need to know that. :-)
+  \item Best learnt with time and observing patterns.
+  \end{itemize}
+\end{frame}  
+
+\begin{frame}[fragile]
+\frametitle{Monad TypeClass}
+
+\begin{lstlisting}
+class  Monad m  where
+
+  (>>=)            :: m a -> (a -> m b) -> m b
+
+  return           :: a -> m a 
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Maybe Monad}
+\begin{lstlisting}
+instance Monad Maybe where
+
+    return x = Just x
+
+    Nothing >>= f = Nothing  
+    Just x >>= f  = f x
+  
+\end{lstlisting}
+  
+\end{frame}
+
+\section{Sheep Cloning Experiment}
+
+\begin{frame}[fragile]{Types and Functions}
+  \begin{lstlisting}
+type Sheep = ...
+
+father :: Sheep -> Maybe Sheep
+father = ...
+
+mother :: Sheep -> Maybe Sheep
+mother = ...
+\end{lstlisting}
+  
+\end{frame}
+
+\begin{frame}[fragile]{Other Functions}
+\begin{lstlisting}
+maternalGrandfather :: Sheep -> Maybe Sheep
+maternalGrandfather s = case (mother s) of
+                          Nothing -> Nothing
+                          Just m  -> father m
+
+mpg :: Sheep -> Maybe Sheep
+mpg s = case (mother s) of
+          Nothing -> Nothing
+          Just m  -> case (father m) of
+                       Nothing -> Nothing
+                       Just gf -> father gf
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Monads into action!}
+\begin{lstlisting}
+mpg :: Sheep -> Maybe Sheep
+mpg s = (Just s) >>= mother >>= father >>= father 
+\end{lstlisting}
+\end{frame}
+
+\section{Conclusion}
+\begin{frame}{Conclusion}
+  \begin{itemize}
+  \item Monads are easy!
+  \item Monads are fun!
+  \item It's just another abstraction.
+  \item There are lot of other abstractions. :-)
+  \end{itemize}
+\end{frame} 
+
+\begin{frame}{Courtesy}
+  \begin{itemize}
+  \item All about Monads by Jeff Newbern
+
+  \item Real World Haskell
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Questions?}
+  ???
+\end{frame}
+
+\end{document}
