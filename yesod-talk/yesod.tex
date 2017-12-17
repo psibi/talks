@@ -1,0 +1,413 @@
+\documentclass{beamer}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  % or ...
+
+  \setbeamercovered{transparent}
+  % or whatever (possibly just delete it)
+}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{soul}
+\usepackage[english]{babel}
+\lstset{language=Haskell}
+% or whatever
+
+\usepackage[latin1]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Web programming in Haskell using Yesod] % (optional, use only with long paper titles)
+{Web Programming in Haskell using Yesod }
+
+\author[Sibi Prabakaran] % (optional, use only with lots of authors)
+{}
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+
+\institute[Bangalore Haskell User Group Meetup] % (optional, but mostly needed)
+{
+  Bangalore Haskell User Group Meetup \\
+  Xebia India
+  %% TCS Innovation Labs \\
+  %% Cyber Physical Systems Lab
+}
+% - Use the \inst command only if there are several affiliations.
+% - Keep it simple, no one is interested in your street address.
+
+\date[] % (optional)
+{Dec 16, 2017}
+%% {\today}
+
+\subject{Talks}
+% This is only inserted into the PDF information catalog. Can be left
+% out. 
+
+% If you have a file called "university-logo-filename.xxx", where xxx
+% is a graphic format that can be processed by latex or pdflatex,
+% resp., then you can add a logo as follows:
+
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command: 
+
+%% \beamerdefaultoverlayspecification{<+->}
+
+\lstset{language=Haskell, showstringspaces=false}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{About Me}
+\begin{itemize}
+\item
+Sibi
+\item
+Consultant for Xebia
+\item
+Internet Handle: \href{http://psibi.in/about.html}{\beamergotobutton{psibi}}
+\item
+  Mail: sibi@psibi.in
+\item \href{http://psibi.in}{\beamergotobutton{http://psibi.in}}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+
+% Since this a solution template for a generic talk, very little can
+% be said about how it should be structured. However, the talk length
+% of between 15min and 45min and the theme suggest that you stick to
+% the following rules:  
+
+% - Exactly two or three sections (other than the summary).
+% - At *most* three subsections per section.
+% - Talk about 30s to 2min per frame. So there should be between about
+%   15 and 30 frames, all told.
+
+\section{Introduction}
+
+\begin{frame}{Goal}
+\begin{itemize}
+
+\item Viable choice
+\item Yesod's philosophy
+\item Survey of yesod related libraries, ORM backends etc.
+\item Real world experience
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{History}
+  % - A title should summarize the slide in an understandable fashion
+  %   for anyone how does not follow everything on the slide itself.
+  \begin{itemize}
+  \item Yesod is a Hebrew word
+  \item Originally developed by Michael Snoyman
+  \item Initial release: March 8, 2010
+  \item License: MIT
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Why Yesod?}
+  \begin{itemize}
+  \item \st{R} evolutionary framework
+  \item Avoid bugs at compile time
+  \item DSLs for common tasks
+  \item Performant
+  \end{itemize}
+\end{frame}
+
+\section{MVC layer}
+
+\begin{frame}{Persistent}
+
+  \begin{itemize}
+  \item Database agnostic
+  \item Data modeling
+  \item Migrations
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Declare tables}
+\begin{lstlisting}
+  mkPersist [persist|
+  User
+    name String
+    age Int
+  Todo
+    userId UserId  
+    task Text
+    done Bool
+  |]
+\end{lstlisting}
+\begin{itemize}
+\item Other syntax: sqltype, constraint, sql etc.
+\item Deriving json
+\item Reference: \href{https://github.com/yesodweb/persistent/blob/master/docs/Persistent-entity-syntax.md}{\beamergotobutton{Persisent docs}}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{CRUD}
+  \begin{lstlisting}
+    simonId <- insert $ "SPJ" 34
+    marlowId <- insert $ "Marlow" 35
+
+    insert_  $ simonId "Buy dragon book" False
+
+    simonTasks <- selectList
+                  [TodoUserId ==. simonId]
+                  [LimitTo 5]
+
+    (simon :: Maybe User) <- get simonId
+
+    delete marlowId
+    deleteWhere [TodoUserId ==. simonId]
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Routing}
+  \begin{itemize}
+  \item Single data type for representing URLs
+  \item Mapping between route to handler is done
+  \item Two way parsing functions created
+  \item Sync between parsing and handler functions ensured
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Route syntax}
+
+  \begin{lstlisting}
+/ HomeR GET POST
+/hello HelloR
+/fib/#Int FibR GET    
+\end{lstlisting}
+
+\begin{itemize}
+\item Canonical URLs (joinPath, cleanPath)
+\item Pieces: Static, Dynamic single, Dynamic multi  
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Routing internals}
+\begin{lstlisting}
+  data MyAppRoute = HomeR | HelloR | FibR Int
+
+  renderMyAppRoute HomeR = []
+  renderMyAppRoute HelloR = ["hello"]
+  renderMyAppRoute (FibR int) =
+      ["fib", toSinglePiece int]
+
+  parseMyAppRoute [] = Just HomeR
+  parseMyAppRoute ["hello"] = Just HelloR
+  parseMyAppRoute ["fib", int] = do
+      fibInt <- fromSinglePiece int
+      return $ FibR fibInt
+  parseMyAppRoute _ = Nothing
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Template languages}
+  \begin{itemize}
+  \item DSLs for templating
+  \item Compile time syntax checked
+  \item Variable interpolation
+  \item Control structures for Hamlet
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Hamlet}
+\begin{lstlisting}[language=html,basicstyle=\small]
+$doctype 5
+<html>
+  <head>
+    <title>#{pageTitle} - My Site
+      <link rel=stylesheet href=@{StylesheetR}>
+    <body>
+      <h1 .page-title>#{pageTitle}
+      <p>Here is a list of your friends:
+      $if null friends
+         <p>Sorry, I lied
+         <p>You don't have any friends.
+      $else
+         <ul>
+            $forall Friend name age <- friends
+              <li>#{name} (#{age} years old)
+      <footer>^{copyright}
+\end{lstlisting}
+
+\end{frame}
+\begin{frame}[fragile]{Lucius \& Cassius (CSS)}
+  Lucius
+  \begin{lstlisting}[language=html,basicstyle=\small]
+section.blog {
+    padding: 1em;
+    border: 1px solid #000;
+    h1 {
+        color: #{headingColor};
+        background-image: url(@{MyBackgroundR});
+    }
+}
+\end{lstlisting}
+Cassius
+\begin{lstlisting}[language=html,basicstyle=\small]
+section.blog
+    padding: 1em
+    border: 1px solid #000
+    h1
+        color: #{headingColor}
+        background-image: url(@{MyBackgroundR})  
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Julius (Javascript)}
+  \begin{lstlisting}
+  $(function(){
+    $("section.#{sectionClass}").hide();
+    $("#mybutton").click(function(){
+      document.location = "@{SomeRouteR}";
+    });
+    ^{addBling}
+  });
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{XSS Protection}
+\begin{lstlisting}[language=haskell]
+name :: Text
+name = "Sibi <script>alert('injected')</script>"
+
+main :: IO ()
+main = putStrLn $ renderHtml [shamlet|#{name}|]
+\end{lstlisting}
+
+Output:
+\begin{lstlisting}[basicstyle=\tiny]
+Sibi &lt;script&gt;alert(&#39;injected&#39;)&lt;/script&gt;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{XSS Protection}
+  \begin{itemize}
+  \item blaze-html package
+  \item ToMarkup typeclass
+  \item Textual values are always escaped (see ToMarkup instances)
+  \item Html values aren't escaped
+  \item preEscapedToHtml
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Widgets}
+\begin{itemize}
+\item Glue between template languages
+\item Ability to re-use a single UI component
+\item Can perform IO operations (DB queries etc.)
+\item Controls the generation of end HTML (<body>,<head> tags)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Widget: Example}
+  \begin{lstlisting}[language=haskell,basicstyle=\tiny]
+getHomeR = defaultLayout $ do
+    setTitle "My Page Title"
+    toWidget [lucius| h1 { color: green; } |]
+    addScriptRemote "https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"
+    toWidget
+        [julius|
+            $(function() {
+                $("h1").click(function(){
+                    alert("You clicked on the heading!");
+                });
+            });
+        |]
+    toWidgetHead
+        [hamlet|
+            <meta name=keywords content="some sample keywords">
+        |]
+    toWidget
+        [hamlet|
+            <h1>Here's one way of including content
+        |]
+    [whamlet|<h2>Here's another |]
+    toWidgetBody
+        [julius|
+            alert("This is included in the body itself");
+        |]  
+\end{lstlisting}
+\end{frame}
+
+\section{Deployment}
+
+\begin{frame}{Deploying Yesod apps}
+  \begin{itemize}
+  \item Common advice: Don't compile on server
+  \item Change config file for production (Personally used CPP)
+  \item Files to deploy: executable, static folder
+  \item Keter
+  \item Hapistrano
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Other parts}
+  \begin{itemize}
+\item Subsites
+\item Middlewares
+\item clientsession
+\item yesod-form
+\item yesod-auth
+\item yesod-fb
+\item yesod-sitemap  
+\item websocket/eventsource support
+\item Lots of others in Hackage
+\item Real world experience
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Want to contribute?}
+  \begin{itemize}
+  \item Github: psibi/yesod-rest \href{https://github.com/psibi/yesod-rest}{\beamergotobutton{yesod-rest}}
+  \item Github: psibi/wai-slack-middleware \href{https://github.com/psibi/wai-slack-middleware}{\beamergotobutton{wai-slack}}
+  \item yesod, persistent etc.
+  \end{itemize}
+
+  \hfill \break
+  \hfill \break
+  \hfill \break
+  \hfill \break
+  Questions... ?
+\end{frame}
+
+
+\end{document}
