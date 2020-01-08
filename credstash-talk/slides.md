@@ -75,7 +75,7 @@ dbpassword
 * HMAC
 * Encryption context
 
-# Encryption Algorithm
+# Put Algorithm
 
 ``` shellsession
 $ credstash put dbpassword difficult_password
@@ -88,7 +88,7 @@ $ credstash put dbpassword difficult_password
     ** Ensures integrity and the authenticity of the message.
 * Store them in the dynamo table
 
-# Decryption Algorithm
+# Get Algorithm
 
 ``` shellsession
 $ credstash get dbpassword
