@@ -38,21 +38,21 @@ Depends primarily on the number of keys you have.
 
 # Usage examples
 
-* Setup DynamoDB table.
+Setup DynamoDB table.
 ``` shellsession
-rucredstash setup
+$ rucredstash setup
 ```
-* Put secrets
+Put secret
 ``` shellsession
-rucredstash put "dbpassword" "difficult_password"
+$ rucredstash put "dbpassword" "difficult_password"
 ```
-* Get secrets
+Get secret
 ``` shellsession
-rucredstash get "dbpassword"
+$ rucredstash get "dbpassword"
 ```
-* Delete secrets
+Delete secret
 ``` shellsession
-rucredstash delete "dbpassword"
+$ rucredstash delete "dbpassword"
 ```
 
 # More examples
@@ -72,8 +72,6 @@ dbpassword
 
 * CMK
 * Data Key
-* HMAC
-* Encryption context
 
 # Put Algorithm
 
@@ -85,7 +83,6 @@ $ credstash put dbpassword difficult_password
 * Split the key into half.
 * Encrypt credential using AES algorithm (CTR mode)
 * Compute HMAC of the encrypted text.
-    ** Ensures integrity and the authenticity of the message.
 * Store them in the dynamo table
 
 # Get Algorithm
@@ -96,7 +93,7 @@ $ credstash get dbpassword
 
 * Fetch the corresponding row from DynamoDB.
 * Decrypt the encrypted data key using KMS.
-    ** Split the key into half.
+    - Split the key into half.
 * Verify the HMAC of the encrypted text.
 * Decrypt the credential using first half of the key.
 
