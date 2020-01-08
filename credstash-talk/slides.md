@@ -118,5 +118,6 @@ $ credstash get dbpassword
 * Provide cli subcommand to create CMK
 * Improve error message when it fails
 * Embrace Rust's async/await model
+* Musl based binaries
 
 # Questions
