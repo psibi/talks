@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Sibi Prabakaran">
+  <title>(Ru)credstash</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="./reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="./reveal.js/css/theme/simple.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? './reveal.js/css/print/pdf.css' : './reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="./reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+  <h1 class="title">(Ru)credstash</h1>
+  <p class="author">Sibi Prabakaran</p>
+  <p class="date">Jan 7, 2020</p>
+</section>
+
+<section id="motivation" class="slide level1">
+<h1>Motivation</h1>
+<ul>
+<li>Wanted to use Rust somewhere!</li>
+<li>Was looking for a project: Heard about this tool when J created a ticket for one of our clients</li>
+<li>Summary of the talk: What and How of Credstash</li>
+</ul>
+</section>
+<section id="credstash" class="slide level1">
+<h1>Credstash</h1>
+<ul>
+<li>History
+<ul>
+<li>AWS launches KMK on 2014</li>
+<li>Fugue launches credstash tool on 2015</li>
+</ul></li>
+<li>Credential management and distribution system</li>
+<li>Credential rotation</li>
+<li>Depends on AWS infrastructure</li>
+<li>Alternatives
+<ul>
+<li>Vault</li>
+<li><a href="https://github.com/domodwyer/cryptic">cryptic</a> - Similarly to credstash but uses redis instead of Dynamodb.</li>
+<li>sneaker - Secrets are managed via S3 buckets</li>
+</ul></li>
+</ul>
+</section>
+<section id="pricing" class="slide level1">
+<h1>Pricing</h1>
+<p><img src="./amazon_bill.png"/ height="50%"></p>
+<p>Depends primarily on the number of keys you have.</p>
+</section>
+<section id="usage-examples" class="slide level1">
+<h1>Usage examples</h1>
+<ul>
+<li>Authenticate with AWS</li>
+<li>Via AWS Keys</li>
+<li>AWS Profiles</li>
+<li>MFA</li>
+<li>Setup dynamodb table.</li>
+<li>rucredstash setup</li>
+<li>Put secrets</li>
+<li>rucredstash put &quot;dbpassword&quot; &quot;this_is_a_difficult_password&quot;</li>
+<li>Get secrets</li>
+<li>rucredstash get &quot;dbpassword&quot;</li>
+<li>Delete secrets</li>
+<li>rucredstash delete &quot;dbpassword&quot;</li>
+<li>Other niceities:</li>
+<li>getall</li>
+<li>list</li>
+<li>keys</li>
+</ul>
+</section>
+<section id="kms-concepts" class="slide level1">
+<h1>KMS Concepts</h1>
+<ul>
+<li>CMK</li>
+<li>Data Key</li>
+<li>HMAC</li>
+<li>Encryption context</li>
+</ul>
+</section>
+<section id="encryption-algorithm" class="slide level1">
+<h1>Encryption Algorithm</h1>
+<pre class="shellsession"><code>$ credstash put dbpassword secret_password</code></pre>
+<ul>
+<li>Generate 64 bytes Data key.</li>
+<li>Split the key into half.</li>
+<li>Encrypt credential using AES algorithm (CTR mode)</li>
+<li>Compute HMAC of the encrypted text. ** Ensures integrity and the authenticity of the message.</li>
+<li>Store them in the dynamo table</li>
+</ul>
+</section>
+<section id="decryption-algorithm" class="slide level1">
+<h1>Decryption Algorithm</h1>
+<pre class="shellsession"><code>$ credstash get dbpassword</code></pre>
+<ul>
+<li>Fetch the corresponding row from DynamoDB.</li>
+<li>Decrypt the encrypted data key using KMS. ** Split the key into half.</li>
+<li>Verify the HMAC of the encrypted text.</li>
+<li>Decrypt the credential using first half of the key.</li>
+</ul>
+</section>
+<section id="comparision-with-haskell" class="slide level1">
+<h1>Comparision with Haskell</h1>
+<ul>
+<li>rusoto / amazonka
+<ul>
+<li>Build times</li>
+<li>Much well maintained</li>
+</ul></li>
+<li>Async code issues</li>
+<li>Crypto library</li>
+</ul>
+</section>
+<section id="questions" class="slide level1">
+<h1>Questions</h1>
+</section>
+    </div>
+  </div>
+
+  <script src="./reveal.js/lib/js/head.min.js"></script>
+  <script src="./reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: './reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: './reveal.js/plugin/zoom-js/zoom.js', async: true },
+              { src: './reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
