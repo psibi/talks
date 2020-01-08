@@ -12,17 +12,16 @@ date: Jan 8, 2020
 
 # Credstash
 * History
-    * AWS launches KMK on 2014
+    * AWS launches KMS on 2014
     * Fugue launches credstash tool on 2015
 * Credential management and distribution system
 * Depends on AWS infrastructure
 * Alternatives
     - Vault
-    - [cryptic](https://github.com/domodwyer/cryptic) - Similarly to
-    credstash but uses redis instead of Dynamodb.
+    - [cryptic](https://github.com/domodwyer/cryptic)
     - sneaker - Secrets are managed via S3 buckets
 
-# Pricing 
+# Pricing
 
 <img src="./amazon_bill.png"/ height="50%">
 
@@ -33,19 +32,41 @@ Depends primarily on the number of keys you have.
 * Authenticate with AWS
   - Via AWS Keys
   - AWS Profiles
+    * rucredstash --profile sibi-admin
   - MFA
-* Setup dynamodb table.
-  - rucredstash setup
+    * rucredstash --mfa_serial mfa_arn_id
+
+# Usage examples
+
+* Setup DynamoDB table.
+``` shellsession
+rucredstash setup
+```
 * Put secrets
-  - rucredstash put "dbpassword" "this_is_a_difficult_password"
+``` shellsession
+rucredstash put "dbpassword" "difficult_password"
+```
 * Get secrets
-  - rucredstash get "dbpassword"
+``` shellsession
+rucredstash get "dbpassword"
+```
 * Delete secrets
-  - rucredstash delete "dbpassword"
-* Other niceities:
-  - getall
-  - list
-  - keys
+``` shellsession
+rucredstash delete "dbpassword"
+```
+
+# More examples
+
+``` shellsession
+$ rucredstash getall
+{
+"dbpassword":"difficult_pasword"
+}
+$ rucredstash list
+dbpassword    -- version 000000000000001 --comment
+$ rucredstash keys
+dbpassword
+```
 
 # KMS Concepts
 
@@ -57,7 +78,7 @@ Depends primarily on the number of keys you have.
 # Encryption Algorithm
 
 ``` shellsession
-$ credstash put dbpassword secret_password
+$ credstash put dbpassword difficult_password
 ```
 
 * Generate 64 bytes Data key.
@@ -79,6 +100,12 @@ $ credstash get dbpassword
 * Verify the HMAC of the encrypted text.
 * Decrypt the credential using first half of the key.
 
+# Comparision with credstash
+
+* Doesn't implement putall subcommand (yet)
+* Doesn't support following digest methods: MD5, SHA224
+* Supports MFA authentication!
+
 # Comparision with Haskell
 
 * rusoto / amazonka
@@ -86,5 +113,13 @@ $ credstash get dbpassword
     * Much well maintained
 * Async code issues
 * Crypto library
+* Documentation of libraries
+
+# Future work
+
+* Implement putall subcommand
+* Provide cli subcommand to create CMK
+* Improve error message when it fails
+* Embrace Rust's async/await model
 
 # Questions
