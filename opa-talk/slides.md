@@ -104,8 +104,8 @@ any_public_networks = true {  # is true if...
 
 # Other Stuff
 
-* https://play.openpolicyagent.org/
-* WASM
+* [https://play.openpolicyagent.org/](https://play.openpolicyagent.org/)
+* WASM Support
 * Editor integrations
 
 # Haskell
