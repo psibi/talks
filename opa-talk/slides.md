@@ -28,7 +28,7 @@ date: April 29, 2020
 * Iteration
 * Tooling
 
-# Rego Expressions
+# Expressions
 
 ``` prolog
 > input.servers[0].protocols[0]
