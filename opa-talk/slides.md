@@ -78,8 +78,8 @@ any_public_networks = true {  # is true if...
 
 # API Integration
 
-* [Python code](https://github.com/open-policy-agent/example-api-authz-python/blob/master/server.py)
-* [Rego code](https://github.com/open-policy-agent/example-api-authz-python/blob/master/example.rego)
+* [Python code](https://github.com/psibi/example-api-authz-python/blob/master/server.py)
+* [Rego code](https://github.com/psibi/example-api-authz-python/blob/format-code/example.rego)
 
 # Experience
 
