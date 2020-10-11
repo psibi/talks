@@ -2,7 +2,7 @@
 
 ## Build slides
 build:
-	pandoc -t revealjs -s -o opa.html slides.md -V revealjs-url=./reveal.js-3.9.2 --variable theme="simple"
+	pandoc -t revealjs -s -o rust.html slides.md -V revealjs-url=./reveal.js-3.9.2 --variable theme="simple"
 
 ## Download reveal.js
 download-revealjs:
@@ -30,3 +30,5 @@ help:
 	} \
 	{ lastLine = $$0 }' $(MAKEFILE_LIST)
 
+
+# Instructions for PDF export: https://github.com/hakimel/reveal.js#instructions-1
