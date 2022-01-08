@@ -1,0 +1,8 @@
+compile:
+    pandoc slides.org -t revealjs -o slides.html --standalone
+
+serve:
+    nix-shell -p haskellPackages.wai-app-static --run "warp -i slides.html"
+
+watch:
+    watchexec -w slides.org "just compile"

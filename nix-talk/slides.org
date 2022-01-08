@@ -1,0 +1,109 @@
+#+TITLE: Nix/NixOS
+#+SUBTITLE: ILUGC
+#+AUTHOR: Sibi Prabakaran
+#+DATE: Jan 8, 2022
+
+#+REVEAL: split
+#+REVEAL_PLUGINS: (highlight)
+
+* Agenda
+
+- My experience with Nix/NixOS
+- Introduction
+- Why Nix
+
+* My experience
+
+- Tried NixOS around 5 years ago
+- Initially used nixpkgs in Ubuntu
+  - For around ~1.5 years
+- Using NixOS for ~ 1 year
+- Maintainer of various packages
+
+* Nix/Nixpkgs/NixOS
+
+- Nix:
+  - Pure, lazy functional language.
+  - Not a general purpose language!
+  - Used for package description, composition
+- Nixpkgs: Collection of packages.
+- NixOS:
+  - Linux + nixpkgs
+  - System configuration also managed via Nix
+
+* Why Nix/NixOS
+
+- Reproducibility
+  - bit identical
+- Multiple versions of a software
+- Atomic upgrades and rollbacks
+- Declarative
+
+* Basic workflow
+
+- configuration.nix
+- home manager
+- writing script
+- Usage is pretty similar to other distros.
+
+* Nix language
+
+- Lazy, Functional and Pure
+- Functions, Sets, Lists etc.
+- Reference: https://nixos.wiki/wiki/Nix_Expression_Language
+
+* Nix Expression
+
+- Code written in Nix language
+
+#+begin_src sh
+❯ nix-instantiate --eval --expr "2 + 2"
+4
+❯ cat example.nix
+2 + 2
+❯ nix-instantiate --eval example.nix
+4
+#+end_src
+
+* Real world Nix code
+
+- Package: [[https://github.com/psibi/dotfiles/blob/master/machines/packages/amber/default.nix][amber]]
+- systemd service: [[https://github.com/psibi/dotfiles/blob/master/machines/modules/cnx.nix][cnx]]
+
+* Nix derivations
+
+- Recipe to build the end product.
+- Reproducible & Deterministic
+
+#+begin_src sh
+❯ fd -e drv nix /nix/store | head -n 5
+/nix/store/ix9j7fmxpfp7c0b2rn95wyy5y1803mya-nixos-manual.desktop.drv
+/nix/store/2a6ylyfsxb8knnana40fbnmk8ka7q1na-etc-nixos.conf.drv
+/nix/store/6r57mn57p9rgijr0lsfihkdkk2djkv86-nixos-manpages.drv
+/nix/store/ppsdnzviyi9q2xqak9qk0w16hpj30frj-nixos.conf.drv
+/nix/store/bp7flklzjxhm966b0d0pxi85dg4zbqpa-nix-prefetch-cvs.drv
+#+end_src
+
+* Derviation..
+
+#+begin_example sh
+❯ nix show-derivation derivation
+#+end_src
+
+* Community
+
+- 80,000 packages
+- Easy to add package as compared to other distributions
+- Images available for cloud providers
+- nix-community organization
+
+* Disadvantages
+
+- No secure boot.
+- Nix specific issues!
+- Learning curve
+- Debugging experience
+- Size of user community
+- Things are still changing: Flakes!
+
+* Questions
