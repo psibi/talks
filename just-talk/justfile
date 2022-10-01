@@ -1,0 +1,21 @@
+VAR1 := "HELLO_WORLD"
+export VAR2 := `whoami`
+
+# List all recipes
+default:
+    just --list --unsorted
+
+hello:
+    echo "hello"
+
+# Compile org file to html
+compile:
+    pandoc slides.org -t revealjs -o slides.html --standalone
+
+# Serve using httplz
+serve:
+    httplz
+
+# Watch changes and recompile
+watch:
+    watchexec -w slides.org "just compile"

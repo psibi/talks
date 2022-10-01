@@ -1,0 +1,60 @@
+#+TITLE: Just and justl.el
+#+SUBTITLE: ILUGC
+#+AUTHOR: Sibi Prabakaran
+#+DATE: Sept 10, 2022
+
+#+REVEAL: split
+#+REVEAL_PLUGINS: (highlight)
+
+* Agenda
+
+- Introduction
+- Why Just
+- Comparison with Makefiles
+
+* Variables
+
+- Variable assignment
+- Command execution
+- Export
+
+* Recipe parameters
+
+- Normal parameters
+- Positional parameters
+- Variadic parameters
+
+* Dependencies
+
+- Pre execution
+- Execution in between
+- Post execution
+
+* Scripts
+
+- Bash scripts
+- Arbitrary scripts!
+
+* Settings
+
+- shell settings
+- dotenv
+
+* Make comparison
+
+- Different tool, different scopes
+- PHONY targets
+- User experience
+
+* Usecases
+
+- Everywhere!
+- CI integration
+- Projects etc
+
+* justl.el
+
+- Home page: [[https://github.com/psibi/justl.el][psibi/justl.el]]
+- Emacs major mode
+
+* Questions
