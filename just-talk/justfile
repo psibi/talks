@@ -1,6 +1,3 @@
-VAR1 := "HELLO_WORLD"
-export VAR2 := `whoami`
-
 # List all recipes
 default:
     just --list --unsorted
