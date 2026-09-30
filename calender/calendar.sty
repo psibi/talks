@@ -63,7 +63,7 @@
   \dayheader{##1}{\thecalendardate}\def\daysep{\vskip1pt\hrule\vskip1pt}
   \activities{##2}
   \addtocounter{calendardate}{1}
-  \ifnum\@currentdaynum>7\@arraycr\hline\else&\fi
+  \ifnum\@currentdaynum>7 \@arraycr\hline\else&\fi
   }
 \def\finishCalendar{
   \ifnum\@currentdaynum=6 &\\\hline\else
@@ -79,7 +79,7 @@
   \ifnum\@currentdaynum>7\global\@currentdaynum=1\fi
   \global\advance\@currentdaynum by 1
   \addtocounter{calendardate}{1}
-  \ifnum\@currentdaynum>7\@arraycr\hline\else&\fi
+  \ifnum\@currentdaynum>7 \@arraycr\hline\else&\fi
   }
 
     \setcounter{calendardate}{1}
